@@ -67,10 +67,9 @@ module.exports.deleteMovie = (req, res, next) => {
     .orFail(new Error('NotValidId'))
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
-        Movie.findByIdAndRemove(movieId).then(() => res.status(OK).send(movie));
-      } else {
-        throw new ForbiddenError(`Нет прав на удаление фильма ${FORBIDDEN_ERROR}`);
+        return Movie.findByIdAndRemove(movieId).then(() => res.status(OK).send(movie));
       }
+      throw new ForbiddenError(`Нет прав на удаление фильма ${FORBIDDEN_ERROR}`);
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
